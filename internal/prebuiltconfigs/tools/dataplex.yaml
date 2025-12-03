@@ -26,6 +26,34 @@ tools:
     kind: dataplex-lookup-entry
     source: dataplex-source
     description: Use this tool to retrieve a specific entry from Dataplex Catalog.
+  attach_glossary:
+    kind: dataplex-attach-glossary
+    source: dataplex-source
+    description: Use this tool to create an entry link between a catalog entry and a glossary term.
+  list_glossaries:
+    kind: dataplex-list-glossaries
+    source: dataplex-source
+    description: Use this tool to list business glossaries in a Dataplex location.
+  create_glossary_term:
+    kind: dataplex-create-glossary-term
+    source: dataplex-source
+    description: Use this tool to create a term in a Dataplex business glossary.
+  create_glossary:
+    kind: dataplex-create-glossary
+    source: dataplex-source
+    description: Use this tool to create a Dataplex business glossary.
+  create_aspect_type:
+    kind: dataplex-create-aspect-type
+    source: dataplex-source
+    description: Use this tool to create a Dataplex aspect type.
+  update_glossary:
+    kind: dataplex-update-glossary
+    source: dataplex-source
+    description: Use this tool to update a Dataplex business glossary.
+  upsert_aspect:
+    kind: dataplex-upsert-aspect
+    source: dataplex-source
+    description: Use this tool to create or update an aspect on a Dataplex entry.
   search_aspect_types:
     kind: dataplex-search-aspect-types
     source: dataplex-source
@@ -35,4 +63,11 @@ toolsets:
   dataplex_tools:
     - search_entries
     - lookup_entry
+    - attach_glossary
+    - list_glossaries
+    - create_glossary
+    - create_glossary_term
+    - update_glossary
+    - create_aspect_type
+    - upsert_aspect
     - search_aspect_types
