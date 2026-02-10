@@ -40,11 +40,18 @@ import (
 )
 
 var (
-	DataplexSourceKind                = "dataplex"
-	DataplexSearchEntriesToolKind     = "dataplex-search-entries"
-	DataplexLookupEntryToolKind       = "dataplex-lookup-entry"
-	DataplexSearchAspectTypesToolKind = "dataplex-search-aspect-types"
-	DataplexProject                   = os.Getenv("DATAPLEX_PROJECT")
+	DataplexSourceKind                 = "dataplex"
+	DataplexSearchEntriesToolKind      = "dataplex-search-entries"
+	DataplexLookupEntryToolKind        = "dataplex-lookup-entry"
+	DataplexAttachGlossaryToolKind     = "dataplex-attach-glossary"
+	DataplexListGlossariesToolKind     = "dataplex-list-glossaries"
+	DataplexCreateGlossaryToolKind     = "dataplex-create-glossary"
+	DataplexCreateGlossaryTermToolKind = "dataplex-create-glossary-term"
+	DataplexUpdateGlossaryToolKind     = "dataplex-update-glossary"
+	DataplexCreateAspectTypeToolKind   = "dataplex-create-aspect-type"
+	DataplexSearchAspectTypesToolKind  = "dataplex-search-aspect-types"
+	DataplexUpsertAspectToolKind       = "dataplex-upsert-aspect"
+	DataplexProject                    = os.Getenv("DATAPLEX_PROJECT")
 )
 
 func getDataplexVars(t *testing.T) map[string]any {
@@ -254,10 +261,87 @@ func getDataplexToolsConfig(sourceConfig map[string]any) map[string]any {
 				"description":  "Simple dataplex lookup entry tool to test end to end functionality.",
 				"authRequired": []string{"my-google-auth"},
 			},
+			"my-dataplex-attach-glossary-tool": map[string]any{
+				"kind":        DataplexAttachGlossaryToolKind,
+				"source":      "my-dataplex-instance",
+				"description": "Simple dataplex attach glossary tool to test end to end functionality.",
+			},
+			"my-auth-dataplex-attach-glossary-tool": map[string]any{
+				"kind":         DataplexAttachGlossaryToolKind,
+				"source":       "my-dataplex-instance",
+				"description":  "Simple dataplex attach glossary tool to test end to end functionality.",
+				"authRequired": []string{"my-google-auth"},
+			},
+			"my-dataplex-list-glossaries-tool": map[string]any{
+				"kind":        DataplexListGlossariesToolKind,
+				"source":      "my-dataplex-instance",
+				"description": "Simple dataplex list glossaries tool to test end to end functionality.",
+			},
+			"my-dataplex-create-glossary-term-tool": map[string]any{
+				"kind":        DataplexCreateGlossaryTermToolKind,
+				"source":      "my-dataplex-instance",
+				"description": "Simple dataplex create glossary term tool to test end to end functionality.",
+			},
+			"my-auth-dataplex-create-glossary-term-tool": map[string]any{
+				"kind":         DataplexCreateGlossaryTermToolKind,
+				"source":       "my-dataplex-instance",
+				"description":  "Simple dataplex create glossary term tool to test end to end functionality.",
+				"authRequired": []string{"my-google-auth"},
+			},
+			"my-auth-dataplex-list-glossaries-tool": map[string]any{
+				"kind":         DataplexListGlossariesToolKind,
+				"source":       "my-dataplex-instance",
+				"description":  "Simple dataplex list glossaries tool to test end to end functionality.",
+				"authRequired": []string{"my-google-auth"},
+			},
+			"my-dataplex-create-glossary-tool": map[string]any{
+				"kind":        DataplexCreateGlossaryToolKind,
+				"source":      "my-dataplex-instance",
+				"description": "Simple dataplex create glossary tool to test end to end functionality.",
+			},
+			"my-auth-dataplex-create-glossary-tool": map[string]any{
+				"kind":         DataplexCreateGlossaryToolKind,
+				"source":       "my-dataplex-instance",
+				"description":  "Simple dataplex create glossary tool to test end to end functionality.",
+				"authRequired": []string{"my-google-auth"},
+			},
+			"my-dataplex-update-glossary-tool": map[string]any{
+				"kind":        DataplexUpdateGlossaryToolKind,
+				"source":      "my-dataplex-instance",
+				"description": "Simple dataplex update glossary tool to test end to end functionality.",
+			},
+			"my-dataplex-create-aspect-type-tool": map[string]any{
+				"kind":        DataplexCreateAspectTypeToolKind,
+				"source":      "my-dataplex-instance",
+				"description": "Simple dataplex create aspect type tool to test end to end functionality.",
+			},
+			"my-auth-dataplex-create-aspect-type-tool": map[string]any{
+				"kind":         DataplexCreateAspectTypeToolKind,
+				"source":       "my-dataplex-instance",
+				"description":  "Simple dataplex create aspect type tool to test end to end functionality.",
+				"authRequired": []string{"my-google-auth"},
+			},
+			"my-auth-dataplex-update-glossary-tool": map[string]any{
+				"kind":         DataplexUpdateGlossaryToolKind,
+				"source":       "my-dataplex-instance",
+				"description":  "Simple dataplex update glossary tool to test end to end functionality.",
+				"authRequired": []string{"my-google-auth"},
+			},
 			"my-dataplex-search-aspect-types-tool": map[string]any{
 				"kind":        DataplexSearchAspectTypesToolKind,
 				"source":      "my-dataplex-instance",
 				"description": "Simple dataplex search aspect types tool to test end to end functionality.",
+			},
+			"my-dataplex-upsert-aspect-tool": map[string]any{
+				"kind":        DataplexUpsertAspectToolKind,
+				"source":      "my-dataplex-instance",
+				"description": "Simple dataplex upsert aspect tool to test end to end functionality.",
+			},
+			"my-auth-dataplex-upsert-aspect-tool": map[string]any{
+				"kind":         DataplexUpsertAspectToolKind,
+				"source":       "my-dataplex-instance",
+				"description":  "Simple dataplex upsert aspect tool to test end to end functionality.",
+				"authRequired": []string{"my-google-auth"},
 			},
 			"my-auth-dataplex-search-aspect-types-tool": map[string]any{
 				"kind":         DataplexSearchAspectTypesToolKind,
@@ -288,9 +372,44 @@ func runDataplexToolGetTest(t *testing.T) {
 			expectedParams: []string{"name", "view", "aspectTypes", "entry"},
 		},
 		{
+			name:           "get my-dataplex-attach-glossary-tool",
+			toolName:       "my-dataplex-attach-glossary-tool",
+			expectedParams: []string{"parent", "entryLinkId", "sourceEntry", "glossaryProject", "glossaryLocation", "glossaryId", "termId", "entryLinkType"},
+		},
+		{
+			name:           "get my-dataplex-create-glossary-term-tool",
+			toolName:       "my-dataplex-create-glossary-term-tool",
+			expectedParams: []string{"glossaryProject", "glossaryLocation", "glossaryId", "termId", "displayName", "description", "labels"},
+		},
+		{
+			name:           "get my-dataplex-list-glossaries-tool",
+			toolName:       "my-dataplex-list-glossaries-tool",
+			expectedParams: []string{"location", "pageSize", "pageToken", "filter", "orderBy"},
+		},
+		{
 			name:           "get my-dataplex-search-aspect-types-tool",
 			toolName:       "my-dataplex-search-aspect-types-tool",
 			expectedParams: []string{"pageSize", "query", "orderBy"},
+		},
+		{
+			name:           "get my-dataplex-create-glossary-tool",
+			toolName:       "my-dataplex-create-glossary-tool",
+			expectedParams: []string{"location", "glossaryId", "displayName", "description", "labels", "validateOnly"},
+		},
+		{
+			name:           "get my-dataplex-update-glossary-tool",
+			toolName:       "my-dataplex-update-glossary-tool",
+			expectedParams: []string{"name", "displayName", "description", "labels", "etag", "validateOnly"},
+		},
+		{
+			name:           "get my-dataplex-create-aspect-type-tool",
+			toolName:       "my-dataplex-create-aspect-type-tool",
+			expectedParams: []string{"location", "aspectTypeId", "aspectType", "validateOnly"},
+		},
+		{
+			name:           "get my-dataplex-upsert-aspect-tool",
+			toolName:       "my-dataplex-upsert-aspect-tool",
+			expectedParams: []string{"entry", "aspectType", "path", "data", "deleteMissingAspects", "allowMissingEntry"},
 		},
 	}
 

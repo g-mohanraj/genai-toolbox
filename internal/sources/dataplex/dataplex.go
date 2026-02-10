@@ -60,13 +60,14 @@ func (r Config) SourceConfigKind() string {
 
 func (r Config) Initialize(ctx context.Context, tracer trace.Tracer) (sources.Source, error) {
 	// Initializes a Dataplex source
-	client, err := initDataplexConnection(ctx, tracer, r.Name, r.Project)
+	catalogClient, glossaryClient, err := initDataplexConnection(ctx, tracer, r.Name, r.Project)
 	if err != nil {
 		return nil, err
 	}
 	s := &Source{
-		Config: r,
-		Client: client,
+		Config:                 r,
+		CatalogClientInstance:  catalogClient,
+		GlossaryClientInstance: glossaryClient,
 	}
 
 	return s, nil
@@ -76,7 +77,8 @@ var _ sources.Source = &Source{}
 
 type Source struct {
 	Config
-	Client *dataplexapi.CatalogClient
+	CatalogClientInstance  *dataplexapi.CatalogClient
+	GlossaryClientInstance *dataplexapi.BusinessGlossaryClient
 }
 
 func (s *Source) SourceKind() string {
@@ -93,7 +95,11 @@ func (s *Source) ProjectID() string {
 }
 
 func (s *Source) CatalogClient() *dataplexapi.CatalogClient {
-	return s.Client
+	return s.CatalogClientInstance
+}
+
+func (s *Source) BusinessGlossaryClient() *dataplexapi.BusinessGlossaryClient {
+	return s.GlossaryClientInstance
 }
 
 func initDataplexConnection(
@@ -101,23 +107,30 @@ func initDataplexConnection(
 	tracer trace.Tracer,
 	name string,
 	project string,
-) (*dataplexapi.CatalogClient, error) {
+) (*dataplexapi.CatalogClient, *dataplexapi.BusinessGlossaryClient, error) {
 	ctx, span := sources.InitConnectionSpan(ctx, tracer, SourceKind, name)
 	defer span.End()
 
 	cred, err := google.FindDefaultCredentials(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find default Google Cloud credentials: %w", err)
+		return nil, nil, fmt.Errorf("failed to find default Google Cloud credentials: %w", err)
 	}
 
 	userAgent, err := util.UserAgentFromContext(ctx)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	client, err := dataplexapi.NewCatalogClient(ctx, option.WithUserAgent(userAgent), option.WithCredentials(cred))
+	opts := []option.ClientOption{option.WithUserAgent(userAgent), option.WithCredentials(cred)}
+	client, err := dataplexapi.NewCatalogClient(ctx, opts...)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create Dataplex client for project %q: %w", project, err)
+		return nil, nil, fmt.Errorf("failed to create Dataplex client for project %q: %w", project, err)
 	}
-	return client, nil
+
+	glossaryClient, err := dataplexapi.NewBusinessGlossaryClient(ctx, opts...)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create Dataplex business glossary client for project %q: %w", project, err)
+	}
+
+	return client, glossaryClient, nil
 }
